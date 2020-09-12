@@ -32,7 +32,7 @@ data "terraform_remote_state" "projectreclass-terraform" {
   backend = "s3" 
   config = {
     bucket = "projectreclass-terraform"
-    key    = "terraform"
+    key    = "terraform.tfstate"
     region = "us-east-2"
   }
 }
