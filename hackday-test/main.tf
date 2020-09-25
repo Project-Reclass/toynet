@@ -39,8 +39,8 @@ resource "aws_instance" "Hackday-test" {
                 sudo yum install httpd -y
                 sudo systemctl start httpd
                 sudo systemctl enable httpd
-                echo '<h1 style=" text-align: center; font-family: cursive; ">Thank You for Coming to Project Reclass Hackday 2020 </h1>' > /var/www/html/index.html
-  EOF
+                echo "<html><body><style>body{background:url(https://www.cbronline.com/wp-content/uploads/2017/08/Terraform.png);}h1{text-align:center;color:white;font-family: cursive;}</style><h1>Thank You for Coming to Project Reclass Hackday 2020 </h1></body></html>" > /var/www/html/index.html
+EOF
 
 
   tags = {
