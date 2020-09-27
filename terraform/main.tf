@@ -22,7 +22,7 @@ data "aws_availability_zones" "available" {
 }
 
 provider "aws" {
-  region = "us-west-2"
+  region = "us-west-1"
 }
 
 module "vpc" {
@@ -44,7 +44,7 @@ module "vpc" {
 terraform {
   backend "s3" {
     bucket = "projectreclass-terraform-california"
-    key    = "terraform2.tfstate"
+    key    = "terraform.tfstate"
     region = "us-west-1"
   }
 }
