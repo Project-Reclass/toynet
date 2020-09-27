@@ -1,5 +1,11 @@
 # Input variable defintions
 
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+  default     = "vpc-04fc2565f55def422"
+}
+
 variable "vpc_name" {
   description = "Name of VPC"
   type        = string
@@ -15,7 +21,7 @@ variable "vpc_cidr" {
 variable "vpc_azs" {
   description = "Availability zones for VPC"
   type        = list
-  default     = ["us-east-2", "us-east-2b", "us-east-2c"]
+  default     = ["us-west-2", "us-west-2b", "us-west-2c"]
 }
 
 variable "vpc_private_subnets" {
