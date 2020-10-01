@@ -63,18 +63,18 @@ resource "aws_security_group" "jumpbox_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+  egress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.1.0/24", "10.0.2.0/24", "10.0.101.0/24", "10.0.102.0/24"]
   }
 }
 
@@ -134,9 +134,7 @@ data "aws_iam_role" "ecs_service_role" {
   name = "ecsServiceRole"
 }
 
-############################################ ToyNet React ############################################
-
-########## Elastic Container Service Cluster ##########################################################
+########## ToyNet React: Elastic Container Service Cluster ###########################################
 
 resource "aws_security_group" "toynet_react_sg" {
   name        = "toynet-react-sg"
@@ -147,28 +145,14 @@ resource "aws_security_group" "toynet_react_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${aws_instance.jumpbox_instance.private_ip}/32"]
   }
 
   ingress {
     from_port   = 20000
     to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.0.1.0/24", "10.0.2.0/24", "10.0.101.0/24", "10.0.102.0/24"]
   }
 
   egress {
@@ -177,6 +161,8 @@ resource "aws_security_group" "toynet_react_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  depends_on        = [aws_instance.jumpbox_instance]
 }
 
 data "template_file" "toynet_react_task_definition_file" {
@@ -198,15 +184,18 @@ resource "aws_ecs_cluster" "toynet_react_ecs_cluster" {
 
 resource "aws_ecs_service" "toynet_react_ecs_service" {
   name            = "toynet-react-service"
-  #iam_role        = data.aws_iam_role.ecs_service_role.arn
+  iam_role        = data.aws_iam_role.ecs_service_role.arn
   cluster         = aws_ecs_cluster.toynet_react_ecs_cluster.id
   task_definition = aws_ecs_task_definition.toynet_react_task_definition.arn
   desired_count   = 2
 
-  depends_on        = [aws_alb_target_group.toynet-react-target-group]
+  depends_on = [
+    aws_alb_target_group.toynet_react_target_group,
+    aws_lb.toynet_react_alb
+  ]
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.toynet-react-target-group.arn
+    target_group_arn = aws_alb_target_group.toynet_react_target_group.arn
     container_name   = "toynet-react-container"
     container_port   = 80
   }
@@ -222,13 +211,14 @@ resource "aws_instance" "toynet_react_container_instance" {
   key_name             = "toynet-2020"
   user_data            = "#!/bin/bash\necho ECS_CLUSTER='toynet-react-cluster' >> /etc/ecs/ecs.config"
 
-  associate_public_ip_address = true
+  associate_public_ip_address = false
 
   tags = {
     Name = "ecs-react-box"
   }
 }
-########## Application Load Balancer ##########################################################
+
+########## ToyNet React: Application Load Balancer ############################################
 
 resource "aws_security_group" "toynet_react_lb_sg" {
   name        = "toynet-react-lb-sg"
@@ -260,7 +250,7 @@ resource "aws_lb" "toynet_react_alb" {
 }
 
 # Target group
-resource "aws_alb_target_group" "toynet-react-target-group" {
+resource "aws_alb_target_group" "toynet_react_target_group" {
   name     = "toynet-react-tg"
   port     = 80
   protocol = "HTTP"
@@ -277,22 +267,18 @@ resource "aws_alb_target_group" "toynet-react-target-group" {
   }
 }
 
-# Listener (redirects traffic from the load balancer to the target group)
-resource "aws_alb_listener" "toynet-react-alb-http-listener" {
-  load_balancer_arn = aws_lb.toynet_react_alb.id
+resource "aws_alb_listener" "toynet_react_alb_httplistener" {
+  load_balancer_arn = aws_lb.toynet_react_alb.arn
   port              = "80"
   protocol          = "HTTP"
-  depends_on        = [aws_alb_target_group.toynet-react-target-group]
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.toynet-react-target-group.arn
+    target_group_arn = aws_alb_target_group.toynet_react_target_group.arn
   }
 }
 
-############################################ ToyNet Django ############################################
-
-########## Elastic Container Service Cluster ##########################################################
+########## ToyNet Django: Elastic Container Service Cluster ##########################################
 
 resource "aws_security_group" "toynet_django_sg" {
   name        = "toynet-django-sg"
@@ -303,14 +289,14 @@ resource "aws_security_group" "toynet_django_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${aws_instance.jumpbox_instance.private_ip}/32"]
   }
 
   ingress {
     from_port   = 20000
     to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.0.1.0/24", "10.0.2.0/24", "10.0.101.0/24", "10.0.102.0/24"]
   }
 
   egress {
@@ -319,6 +305,8 @@ resource "aws_security_group" "toynet_django_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  depends_on        = [aws_instance.jumpbox_instance]
 }
 
 data "template_file" "toynet_django_task_definition_file" {
@@ -342,10 +330,13 @@ resource "aws_ecs_service" "toynet_django_ecs_service" {
   task_definition = aws_ecs_task_definition.toynet_django_task_definition.arn
   desired_count   = 1
 
-  depends_on        = [aws_alb_target_group.toynet-django-target-group]
+  depends_on = [
+    aws_alb_target_group.toynet_django_target_group,
+    aws_lb.toynet_django_alb
+  ]
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.toynet-django-target-group.arn
+    target_group_arn = aws_alb_target_group.toynet_django_target_group.arn
     container_name   = "toynet-django-container"
     container_port   = 8000
   }
@@ -367,7 +358,7 @@ resource "aws_instance" "toynet_django_container_instance" {
   }
 }
 
-########## Application Load Balancer ##########################################################
+########## ToyNet Django: Application Load Balancer ###########################################
 
 resource "aws_security_group" "toynet_django_lb_sg" {
   name        = "toynet-django-lb-sg"
@@ -399,7 +390,7 @@ resource "aws_lb" "toynet_django_alb" {
 }
 
 # Target group
-resource "aws_alb_target_group" "toynet-django-target-group" {
+resource "aws_alb_target_group" "toynet_django_target_group" {
   name     = "toynet-django-tg"
   port     = 8000
   protocol = "HTTP"
@@ -421,11 +412,11 @@ resource "aws_alb_listener" "toynet-django-alb-listener" {
   load_balancer_arn = aws_lb.toynet_django_alb.id
   port              = "8000"
   protocol          = "HTTP"
-  depends_on        = [aws_alb_target_group.toynet-django-target-group]
+  depends_on        = [aws_alb_target_group.toynet_django_target_group]
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.toynet-django-target-group.arn
+    target_group_arn = aws_alb_target_group.toynet_django_target_group.arn
   }
 }
 
