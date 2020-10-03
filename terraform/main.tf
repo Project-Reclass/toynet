@@ -211,7 +211,7 @@ resource "aws_instance" "toynet_react_container_instance" {
   key_name             = "toynet-2020"
   user_data            = "#!/bin/bash\necho ECS_CLUSTER='toynet-react-cluster' >> /etc/ecs/ecs.config"
 
-  associate_public_ip_address = false
+  associate_public_ip_address = true
 
   tags = {
     Name = "ecs-react-box"

@@ -1,4 +1,4 @@
-output "vpc_public_subnets" {
-  description = "IDs of the VPC's public subnets"
-  value       = module.vpc.public_subnets
+output "toynet_react_alb_domain" {
+  description = "The DNS name associated with the react application load balancer"
+  value       = aws_lb.toynet_react_alb.dns_name
 }
