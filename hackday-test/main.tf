@@ -1,8 +1,8 @@
 provider "aws" {
-  region = "us-east-2"
+  region = "us-west-2"
 }
 
-resource "aws_security_group" "hackday-test" {
+resource "aws_security_group" "hackday-site" {
   name        = "hackday-test"
   description = "allow ssh and http traffic"
 
@@ -29,10 +29,10 @@ resource "aws_security_group" "hackday-test" {
   }
 }
 
-resource "aws_instance" "Hackday-test" {
+resource "aws_instance" "Hackday-site" {
   ami               = "ami-0a54aef4ef3b5f881"
   instance_type     = "t2.micro"
-  security_groups   = ["${aws_security_group.hackday-test.name}"]
+  security_groups   = ["${aws_security_group.hackday-site.name}"]
   key_name = "toynet-key-theo-2020"
   user_data = <<-EOF
                 #! /bin/bash
@@ -44,7 +44,7 @@ EOF
 
 
   tags = {
-        Name = "Hackday Test Server"
+        Name = "Hackday Website Server"
   }
 
 }
