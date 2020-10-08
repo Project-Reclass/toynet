@@ -81,7 +81,7 @@ resource "aws_security_group" "jumpbox_stage_sg" {
 }
 
 resource "aws_instance" "jumpbox_instance" {
-  ami                  = "ami-01fee56b22f308154" # Amazon Linux 2 AMI
+  ami                  = "ami-05edb14e89a5b98f3" # Amazon Linux 2 AMI
   instance_type        = "t2.nano"
   iam_instance_profile = aws_iam_instance_profile.ecs_agent_stage.name # to try to pull docker
   subnet_id            = module.vpc.public_subnets[0]
@@ -205,7 +205,7 @@ resource "aws_ecs_service" "toynet_react_ecs_service" {
 }
 
 resource "aws_instance" "toynet_react_container_instance" {
-  ami                  = "ami-01fee56b22f308154" # Amazon ECS Optimized
+  ami                  = "ami-05edb14e89a5b98f3" # Amazon ECS Optimized
   instance_type        = "t2.medium"
   iam_instance_profile = aws_iam_instance_profile.ecs_agent_stage.name
   subnet_id            = module.vpc.public_subnets[0]
@@ -352,7 +352,7 @@ resource "aws_ecs_service" "toynet_django_ecs_service" {
 }
 
 resource "aws_instance" "toynet_django_container_instance" {
-  ami                  = "ami-01fee56b22f308154" # Amazon ECS Optimized
+  ami                  = "ami-05edb14e89a5b98f3" # Amazon ECS Optimized
   instance_type        = "t2.medium"
   iam_instance_profile = aws_iam_instance_profile.ecs_agent_stage.name
   subnet_id            = module.vpc.private_subnets[0]
