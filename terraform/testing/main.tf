@@ -8,10 +8,10 @@ terraform {
   }
 }
 
-data "terraform_remote_state" "projectreclass-terraform-california" {
+data "terraform_remote_state" "projectreclass-terraform-virgnia" {
   backend = "s3" 
   config = {
-    bucket = "projectreclass-terraform-california"
+    bucket = "projectreclass-terraform-virgnia"
     key    = "terraform.tfstate"
     region = "us-east-1"
   }
@@ -43,7 +43,7 @@ module "vpc" {
 
 terraform {
   backend "s3" {
-    bucket = "projectreclass-terraform-california"
+    bucket = "projectreclass-terraform-virgnia"
     key    = "terraform.tfstate"
     region = "us-east-1"
   }
@@ -84,7 +84,7 @@ resource "aws_instance" "jumpbox_instance" {
   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name # to try to pull docker
   subnet_id            = module.vpc.public_subnets[0]
   security_groups      = [aws_security_group.jumpbox_sg.id]
-  key_name             = "toynet-2020"
+  key_name             = "Key"
   user_data            = "#!/bin/bash\nsudo amazon-linux-extras install docker; sudo systemctl start docker;"
 
   associate_public_ip_address = true
@@ -208,7 +208,7 @@ resource "aws_instance" "toynet_react_container_instance" {
   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
   subnet_id            = module.vpc.public_subnets[0]
   security_groups      = [aws_security_group.toynet_react_sg.id]
-  key_name             = "toynet-2020"
+  key_name             = "Key"
   user_data            = "#!/bin/bash\necho ECS_CLUSTER='toynet-react-cluster' >> /etc/ecs/ecs.config"
 
   associate_public_ip_address = true
@@ -355,7 +355,7 @@ resource "aws_instance" "toynet_django_container_instance" {
   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
   subnet_id            = module.vpc.private_subnets[0]
   security_groups      = [aws_security_group.toynet_django_sg.id]
-  key_name             = "toynet-2020"
+  key_name             = "Key"
   user_data            = "#!/bin/bash\necho ECS_CLUSTER='toynet-django-cluster' >> /etc/ecs/ecs.config"
 
   associate_public_ip_address = false
