@@ -13,7 +13,7 @@ data "terraform_remote_state" "projectreclass-terraform-california" {
   config = {
     bucket = "projectreclass-terraform-california"
     key    = "terraform.tfstate"
-    region = "us-west-1"
+    region = "us-east-1"
   }
 }
 
@@ -22,7 +22,7 @@ data "aws_availability_zones" "available" {
 }
 
 provider "aws" {
-  region = "us-west-1"
+  region = "us-east-1"
 }
 
 module "vpc" {
@@ -45,7 +45,7 @@ terraform {
   backend "s3" {
     bucket = "projectreclass-terraform-california"
     key    = "terraform.tfstate"
-    region = "us-west-1"
+    region = "us-east-1"
   }
 }
 
@@ -79,7 +79,7 @@ resource "aws_security_group" "jumpbox_sg" {
 }
 
 resource "aws_instance" "jumpbox_instance" {
-  ami                  = "ami-0e4035ae3f70c400f" # Amazon Linux 2 AMI
+  ami                  = "ami-0669eafef622afea1" # Amazon Linux 2 AMI ecs optimized
   instance_type        = "t2.nano"
   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name # to try to pull docker
   subnet_id            = module.vpc.public_subnets[0]
@@ -203,7 +203,7 @@ resource "aws_ecs_service" "toynet_react_ecs_service" {
 }
 
 resource "aws_instance" "toynet_react_container_instance" {
-  ami                  = "ami-056b01efa5c7f8718" # Amazon ECS Optimized
+  ami                  = "ami-0669eafef622afea1" # Amazon ECS Optimized
   instance_type        = "t2.medium"
   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
   subnet_id            = module.vpc.public_subnets[0]
@@ -350,7 +350,7 @@ resource "aws_ecs_service" "toynet_django_ecs_service" {
 }
 
 resource "aws_instance" "toynet_django_container_instance" {
-  ami                  = "ami-056b01efa5c7f8718" # Amazon ECS Optimized
+  ami                  = "ami-0669eafef622afea1" # Amazon ECS Optimized
   instance_type        = "t2.medium"
   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
   subnet_id            = module.vpc.private_subnets[0]
