@@ -1,4 +1,4 @@
-# Terraform configuration
+ # Terraform configuration
 
 terraform {
   required_providers {
@@ -9,12 +9,11 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "us-west-2"
 }
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "2.21.0"
 
   name = var.vpc_name
   cidr = var.vpc_cidr
@@ -28,51 +27,27 @@ module "vpc" {
   tags = var.vpc_tags
 }
 
-resource "aws_s3_bucket" "tf_state_test" {
-  # Unique bucket name 
-  bucket = "projectreclass-test-bucket"
-
-  # Prevent accidental deletion of tf state
-  lifecycle {
-    prevent_destroy = true
-  }
-
-  # Enable Versioning to track history 
-  versioning {
-    enabled = true
-  }
-
-  # Enable Encryption
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-}
 
 terraform {
   backend "s3" {
     # S3 Bucket Details
     # Must match bucket name
-    bucket = "projectreclass-test-bucket"
+    bucket = "projectreclass-stage-bucket"
     # Name to assign to the state file
-    key = "test/tf.state"
+    key = "stage/tf.state"
     # region the bucket is in
-    region = "us-east-1"
+    region = "us-west-2"
 
     # DynamoDB Details
-    dynamodb_table = "db_for_tf_locks_test"
+    dynamodb_table = "db_for_tf_locks_stage"
     encrypt        = true
-    depends_on     = [aws_dynamodb_table.tf_locks_test]
   }
 }
 
 ############################################ Jumpbox ############################################
 
-resource "aws_security_group" "jumpbox_sg" {
-  name        = "jumpbox-sg"
+resource "aws_security_group" "jumpbox_sg-stage" {
+  name        = "jumpbox-sg-stage"
   description = "allow ssh"
   vpc_id      = module.vpc.vpc_id
 
@@ -99,12 +74,12 @@ resource "aws_security_group" "jumpbox_sg" {
 }
 
 resource "aws_instance" "jumpbox_instance" {
-  ami                  = "ami-0669eafef622afea1" # Amazon Linux 2 AMI ecs optimized
+  ami                  = "ami-0db98e57137013b2d" # Amazon Linux 2 AMI ecs optimized
   instance_type        = "t2.nano"
-  iam_instance_profile = aws_iam_instance_profile.ecs_agent.name # to try to pull docker
+  iam_instance_profile = "ecs-agent-stage" # to try to pull docker
   subnet_id            = module.vpc.public_subnets[0]
-  security_groups      = [aws_security_group.jumpbox_sg.id]
-  key_name             = "Key"
+  security_groups      = [aws_security_group.jumpbox_sg-stage.id]
+  key_name             = "toynet-key-theo-2020"
   user_data            = "#!/bin/bash\nsudo amazon-linux-extras install docker; sudo systemctl start docker;"
 
   associate_public_ip_address = true
@@ -117,7 +92,7 @@ resource "aws_instance" "jumpbox_instance" {
 ############################################ Container Policies & Roles ############################################
 
 resource "aws_iam_role" "ecs_agent" {
-  name               = "ecs-agent"
+  name               = "ecs-agent-stage"
   assume_role_policy = data.aws_iam_policy_document.ecs_agent_policydoc.json
 }
 
@@ -138,7 +113,7 @@ resource "aws_iam_role_policy_attachment" "ecs_agent" {
 }
 
 resource "aws_iam_instance_profile" "ecs_agent" {
-  name = "ecs-agent"
+  name = "ecs-agent-instance-profile-stage"
   role = aws_iam_role.ecs_agent.name
 }
 
@@ -156,8 +131,8 @@ data "aws_iam_role" "ecs_service_role" {
 
 ########## ToyNet React: Elastic Container Service Cluster ###########################################
 
-resource "aws_security_group" "toynet_react_sg" {
-  name        = "toynet-react-sg"
+resource "aws_security_group" "toynet_react_sg-stage" {
+  name        = "toynet-react-sg-stage"
   description = "allow ssh and http traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -188,7 +163,7 @@ resource "aws_security_group" "toynet_react_sg" {
 data "template_file" "toynet_react_task_definition_file" {
   template = file("toynet-react-task-definition.json")
   vars = {
-    DJANGO_SERVER_URI = aws_lb.toynet_django_alb.dns_name
+    DJANGO_SERVER_URI = "stage.django.projectreclass.org" 
   }
 }
 
@@ -223,12 +198,12 @@ resource "aws_ecs_service" "toynet_react_ecs_service" {
 }
 
 resource "aws_instance" "toynet_react_container_instance" {
-  ami                  = "ami-0669eafef622afea1" # Amazon ECS Optimized
+  ami                  = "ami-0db98e57137013b2d" # Amazon ECS Optimized
   instance_type        = "t2.medium"
-  iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
+  iam_instance_profile = "ecs-agent-instance-profile-stage" 
   subnet_id            = module.vpc.public_subnets[0]
-  security_groups      = [aws_security_group.toynet_react_sg.id]
-  key_name             = "Key"
+  security_groups      = [aws_security_group.toynet_react_sg-stage.id]
+  key_name             = "toynet-key-theo-2020"
   user_data            = "#!/bin/bash\necho ECS_CLUSTER='toynet-react-cluster' >> /etc/ecs/ecs.config"
 
   associate_public_ip_address = true
@@ -240,8 +215,8 @@ resource "aws_instance" "toynet_react_container_instance" {
 
 ########## ToyNet React: Application Load Balancer ############################################
 
-resource "aws_security_group" "toynet_react_lb_sg" {
-  name        = "toynet-react-lb-sg"
+resource "aws_security_group" "toynet_react_lb_sg-stage" {
+  name        = "toynet-react-lb-sg-stage"
   description = "allow HTTP and HTTPS"
   vpc_id      = module.vpc.vpc_id
 
@@ -272,7 +247,7 @@ resource "aws_lb" "toynet_react_alb" {
   name               = "toynet-react-alb"
   load_balancer_type = "application"
   internal           = false
-  security_groups    = [aws_security_group.toynet_react_lb_sg.id]
+  security_groups    = [aws_security_group.toynet_react_lb_sg-stage.id]
   subnets            = [module.vpc.public_subnets[0], module.vpc.public_subnets[1]]
 }
 
@@ -307,8 +282,8 @@ resource "aws_alb_listener" "toynet_react_alb_httplistener" {
 
 ########## ToyNet Django: Elastic Container Service Cluster ##########################################
 
-resource "aws_security_group" "toynet_django_sg" {
-  name        = "toynet-django-sg"
+resource "aws_security_group" "toynet_django_sg-stage" {
+  name        = "toynet-django-sg-stage"
   description = "allow ssh and http traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -370,12 +345,12 @@ resource "aws_ecs_service" "toynet_django_ecs_service" {
 }
 
 resource "aws_instance" "toynet_django_container_instance" {
-  ami                  = "ami-0669eafef622afea1" # Amazon ECS Optimized
+  ami                  = "ami-0db98e57137013b2d" # Amazon ECS Optimized
   instance_type        = "t2.medium"
-  iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
+  iam_instance_profile = "ecs-agent-instance-profile-stage" 
   subnet_id            = module.vpc.private_subnets[0]
-  security_groups      = [aws_security_group.toynet_django_sg.id]
-  key_name             = "Key"
+  security_groups      = [aws_security_group.toynet_django_sg-stage.id]
+  key_name             = "toynet-key-theo-2020"
   user_data            = "#!/bin/bash\necho ECS_CLUSTER='toynet-django-cluster' >> /etc/ecs/ecs.config"
 
   associate_public_ip_address = false
@@ -387,8 +362,8 @@ resource "aws_instance" "toynet_django_container_instance" {
 
 ########## ToyNet Django: Application Load Balancer ###########################################
 
-resource "aws_security_group" "toynet_django_lb_sg" {
-  name        = "toynet-django-lb-sg"
+resource "aws_security_group" "toynet_django_lb_sg-stage" {
+  name        = "toynet-django-lb-sg-stage"
   description = "allow port 8000"
   vpc_id      = module.vpc.vpc_id
 
@@ -412,7 +387,7 @@ resource "aws_lb" "toynet_django_alb" {
   name               = "toynet-django-alb"
   load_balancer_type = "application"
   internal           = true
-  security_groups    = [aws_security_group.toynet_django_lb_sg.id]
+  security_groups    = [aws_security_group.toynet_django_lb_sg-stage.id]
   subnets            = [module.vpc.private_subnets[0], module.vpc.private_subnets[1]]
 }
 
@@ -447,4 +422,27 @@ resource "aws_alb_listener" "toynet-django-alb-listener" {
   }
 }
 
+resource "aws_route53_record" "django-alb-stage" {
+  zone_id = "Z0421550326IMVV3AWYER" 
+  name    = "stage.django.projectreclass.org"
+  type    = "A"
 
+  alias {
+    name                   = aws_lb.toynet_django_alb.dns_name
+    zone_id                = aws_lb.toynet_django_alb.zone_id
+    evaluate_target_health = true
+  }
+}
+
+
+resource "aws_route53_record" "react-alb-stage" {
+  zone_id = "Z0421550326IMVV3AWYER"
+  name    = "stage.toynet.projectreclass.org"
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.toynet_react_alb.dns_name
+    zone_id                = aws_lb.toynet_react_alb.zone_id
+    evaluate_target_health = true
+  }
+}

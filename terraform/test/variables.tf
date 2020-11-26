@@ -9,7 +9,7 @@ variable "vpc_id" {
 variable "vpc_name" {
   description = "Name of VPC"
   type        = string
-  default     = "hackday-vpc"
+  default     = "test-vpc"
 }
 
 variable "vpc_cidr" {
@@ -21,7 +21,7 @@ variable "vpc_cidr" {
 variable "vpc_azs" {
   description = "Availability zones for VPC"
   type        = list
-  default     = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  default     = ["us-east-1a", "us-east-1b"]
 }
 
 variable "vpc_private_subnets" {
@@ -33,19 +33,19 @@ variable "vpc_private_subnets" {
 variable "vpc_public_subnets" {
   description = "Public subnets for VPC"
   type        = list(string)
-  default     = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  default     = ["10.0.101.0/24", "10.0.102.0/24"]
 }
 
 variable "vpc_enable_nat_gateway" {
   description = "Enable NAT gateway for VPC"
-  type    = bool
-  default = true
+  type        = bool
+  default     = true
 }
 
 variable "vpc_tags" {
   description = "Tags to apply to resources created by VPC module"
   type        = map(string)
-  default     = {
+  default = {
     Terraform   = "true"
     Environment = "dev"
   }

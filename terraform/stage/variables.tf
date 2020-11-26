@@ -9,7 +9,7 @@ variable "vpc_id" {
 variable "vpc_name" {
   description = "Name of VPC"
   type        = string
-  default     = "hackday-vpc"
+  default     = "stage-vpc"
 }
 
 variable "vpc_cidr" {
@@ -21,7 +21,7 @@ variable "vpc_cidr" {
 variable "vpc_azs" {
   description = "Availability zones for VPC"
   type        = list
-  default     = ["us-east-1a", "us-east-1b"]
+  default     = ["us-west-2a", "us-west-2b"]
 }
 
 variable "vpc_private_subnets" {
