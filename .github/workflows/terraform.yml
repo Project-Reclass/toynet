@@ -24,3 +24,15 @@ jobs:
       with:
         entrypoint: terraform
         args: validate
+        
+    - name: Run a Terraform format check    
+      uses: docker://hashicorp/terraform:0.12.11
+      with:
+        entrypoint: terraform
+        args: fmt -check
+        
+    - name: Run a Terraform Plan    
+      uses: docker://hashicorp/terraform:0.12.11
+      with:
+        entrypoint: terraform
+        args: plan
