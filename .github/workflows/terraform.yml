@@ -36,9 +36,10 @@ jobs:
         args: fmt -check
       
     - name: Terraform Plan
-      id: plan
-      if: github.event_name == 'pull_request'
-      run: terraform plan -no-color
+      uses: docker://hashicorp/terraform:0.12.11
+      with:
+        entrypoint: terraform
+        args: plan
       continue-on-error: true
       
     - name: Update Pull Request
