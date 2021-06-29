@@ -8,10 +8,10 @@ terraform {
   }
 }
 
-data "terraform_remote_state" "projectreclass-terraform-prod-ohio" {
+data "terraform_remote_state" "projectreclass-terraform-production-ohio" {
   backend = "s3"
   config = {
-    bucket = "projectreclass-terraform-prod-ohio"
+    bucket = "projectreclass-terraform-production-ohio"
     key    = "terraform.tfstate"
     region = "us-east-2"
   }
@@ -46,7 +46,7 @@ module "vpc" {
 # Refer to state stored in S3 bucket for the given region 
 terraform {
   backend "s3" {
-    bucket = "projectreclass-terraform-prod-ohio"
+    bucket = "projectreclass-terraform-production-ohio"
     key    = "terraform.tfstate"
     region = "us-east-2"
   }
@@ -56,7 +56,7 @@ terraform {
 # Creates ECR toynet-django-repo
 resource "aws_ecr_repository" "toynet-django-repo" {
   name                 = "toynet-django-repo"
-  image_tag_mutability = MUTABLE
+  image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
@@ -66,7 +66,7 @@ resource "aws_ecr_repository" "toynet-django-repo" {
 # Creates ECR toynet-react-repo
 resource "aws_ecr_repository" "toynet-react-repo" {
   name                 = "toynet-react-repo"
-  image_tag_mutability = MUTABLE
+  image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
@@ -102,12 +102,12 @@ resource "aws_security_group" "jumpbox_sg" {
 }
 
 resource "aws_instance" "jumpbox_instance" {
-  ami                  = "ami-06e650acd294da294" # Amazon Linux 2 AMI
+  ami                  = "ami-062be0c2f0e7fb6d2" # Amazon Linux 2 AMI
   instance_type        = "t2.nano"
   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name # to try to pull docker
   subnet_id            = module.vpc.public_subnets[0]
   security_groups      = [aws_security_group.jumpbox_sg.id]
-  key_name             = "toynet-key-theo-2020"
+  key_name             = "vault"
   user_data            = "#!/bin/bash\nsudo amazon-linux-extras install docker; sudo systemctl start docker;"
 
   associate_public_ip_address = true
@@ -226,12 +226,12 @@ resource "aws_ecs_service" "toynet_react_ecs_service" {
 }
 
 resource "aws_instance" "toynet_react_container_instance" {
-  ami                  = "ami-06e650acd294da294" # Amazon ECS Optimized
+  ami                  = "ami-062be0c2f0e7fb6d2" # Amazon ECS Optimized
   instance_type        = "t2.nano"
   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
   subnet_id            = module.vpc.public_subnets[0]
   security_groups      = [aws_security_group.toynet_react_sg.id]
-  key_name             = "toynet-key-theo-2020"
+  key_name             = "vault"
   user_data            = "#!/bin/bash\necho ECS_CLUSTER='toynet-react-cluster' >> /etc/ecs/ecs.config"
 
   associate_public_ip_address = true
@@ -373,12 +373,12 @@ resource "aws_ecs_service" "toynet_django_ecs_service" {
 }
 
 resource "aws_instance" "toynet_django_container_instance" {
-  ami                  = "ami-06e650acd294da294" # Amazon ECS Optimized
+  ami                  = "ami-062be0c2f0e7fb6d2" # Amazon ECS Optimized
   instance_type        = "t2.nano"
   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
   subnet_id            = module.vpc.private_subnets[0]
   security_groups      = [aws_security_group.toynet_django_sg.id]
-  key_name             = "toynet-key-theo-2020"
+  key_name             = "vault"
   user_data            = "#!/bin/bash\necho ECS_CLUSTER='toynet-django-cluster' >> /etc/ecs/ecs.config"
 
   associate_public_ip_address = false

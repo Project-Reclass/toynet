@@ -9,7 +9,7 @@ variable "vpc_id" {
 variable "vpc_name" {
   description = "Name of VPC"
   type        = string
-  default     = "prod-toynet-vpc"
+  default     = "production-toynet-vpc"
 }
 
 variable "vpc_cidr" {
@@ -47,6 +47,6 @@ variable "vpc_tags" {
   type        = map(string)
   default     = {
     Terraform   = "true"
-    Environment = "prod"
+    Environment = "production"
   }
 }

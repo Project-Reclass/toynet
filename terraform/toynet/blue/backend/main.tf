@@ -14,7 +14,7 @@ provider "aws" {
 
 resource "aws_s3_bucket" "tf_state_stage" {
   # Unique bucket name 
-  bucket = "projectreclass-terraform-prod-ohio"
+  bucket = "projectreclass-terraform-production-ohio"
 
   # Prevent accidental deletion of tf state
   lifecycle {
