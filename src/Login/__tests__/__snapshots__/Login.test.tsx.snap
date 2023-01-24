@@ -1,0 +1,300 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The Module List should have red border around password input when length <= 3 char && username > 3 1`] = `
+<div>
+  <div
+    class="css-mikc7i"
+  >
+    <div
+      class="css-1nlyd02"
+    >
+      <form>
+        <div
+          class="chakra-stack css-egoftb"
+        >
+          <h2
+            class="chakra-heading css-xrxou1"
+          >
+            Login to ToyNet!
+          </h2>
+          <input
+            autocomplete="username"
+            class="chakra-input css-cr9ig0"
+            placeholder="Username"
+            type="text"
+            value="abcd"
+          />
+          <div
+            class="chakra-input__group css-4302v8"
+          >
+            <input
+              aria-invalid="true"
+              autocomplete="current-password"
+              class="chakra-input css-j7kdny"
+              data-testid="password-input"
+              placeholder="Password"
+              type="password"
+              value="abc"
+            />
+            <div
+              class="chakra-input__right-element css-ohd79a"
+            >
+              <button
+                class="chakra-button css-bzoy97"
+                type="button"
+              >
+                Show
+              </button>
+            </div>
+          </div>
+          <button
+            class="chakra-button css-1bqgmxk"
+            type="button"
+          >
+            Sign In
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`The Module List should have red border around username and password input when length <= 3 1`] = `
+<div>
+  <div
+    class="css-mikc7i"
+  >
+    <div
+      class="css-1nlyd02"
+    >
+      <form>
+        <div
+          class="chakra-stack css-egoftb"
+        >
+          <h2
+            class="chakra-heading css-xrxou1"
+          >
+            Login to ToyNet!
+          </h2>
+          <input
+            aria-invalid="true"
+            autocomplete="username"
+            class="chakra-input css-cr9ig0"
+            placeholder="Username"
+            type="text"
+            value="abc"
+          />
+          <div
+            class="chakra-input__group css-4302v8"
+          >
+            <input
+              aria-invalid="true"
+              autocomplete="current-password"
+              class="chakra-input css-j7kdny"
+              data-testid="password-input"
+              placeholder="Password"
+              type="password"
+              value="abc"
+            />
+            <div
+              class="chakra-input__right-element css-ohd79a"
+            >
+              <button
+                class="chakra-button css-bzoy97"
+                type="button"
+              >
+                Show
+              </button>
+            </div>
+          </div>
+          <button
+            class="chakra-button css-1bqgmxk"
+            type="button"
+          >
+            Sign In
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`The Module List should have red border around username input when length <= 3 char && password > 3 1`] = `
+<div>
+  <div
+    class="css-mikc7i"
+  >
+    <div
+      class="css-1nlyd02"
+    >
+      <form>
+        <div
+          class="chakra-stack css-egoftb"
+        >
+          <h2
+            class="chakra-heading css-xrxou1"
+          >
+            Login to ToyNet!
+          </h2>
+          <input
+            aria-invalid="true"
+            autocomplete="username"
+            class="chakra-input css-cr9ig0"
+            placeholder="Username"
+            type="text"
+            value="abc"
+          />
+          <div
+            class="chakra-input__group css-4302v8"
+          >
+            <input
+              autocomplete="current-password"
+              class="chakra-input css-j7kdny"
+              data-testid="password-input"
+              placeholder="Password"
+              type="password"
+              value="abcd"
+            />
+            <div
+              class="chakra-input__right-element css-ohd79a"
+            >
+              <button
+                class="chakra-button css-bzoy97"
+                type="button"
+              >
+                Show
+              </button>
+            </div>
+          </div>
+          <button
+            class="chakra-button css-1bqgmxk"
+            type="button"
+          >
+            Sign In
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`The Module List should not have red border around username and password input when length > 3 1`] = `
+<div>
+  <div
+    class="css-mikc7i"
+  >
+    <div
+      class="css-1nlyd02"
+    >
+      <form>
+        <div
+          class="chakra-stack css-egoftb"
+        >
+          <h2
+            class="chakra-heading css-xrxou1"
+          >
+            Login to ToyNet!
+          </h2>
+          <input
+            autocomplete="username"
+            class="chakra-input css-cr9ig0"
+            placeholder="Username"
+            type="text"
+            value="abcd"
+          />
+          <div
+            class="chakra-input__group css-4302v8"
+          >
+            <input
+              autocomplete="current-password"
+              class="chakra-input css-j7kdny"
+              data-testid="password-input"
+              placeholder="Password"
+              type="password"
+              value="abcd"
+            />
+            <div
+              class="chakra-input__right-element css-ohd79a"
+            >
+              <button
+                class="chakra-button css-bzoy97"
+                type="button"
+              >
+                Show
+              </button>
+            </div>
+          </div>
+          <button
+            class="chakra-button css-1bqgmxk"
+            type="button"
+          >
+            Sign In
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`The Module List should render and match snapshot 1`] = `
+<div>
+  <div
+    class="css-mikc7i"
+  >
+    <div
+      class="css-1nlyd02"
+    >
+      <form>
+        <div
+          class="chakra-stack css-egoftb"
+        >
+          <h2
+            class="chakra-heading css-xrxou1"
+          >
+            Login to ToyNet!
+          </h2>
+          <input
+            autocomplete="username"
+            class="chakra-input css-cr9ig0"
+            placeholder="Username"
+            type="text"
+            value=""
+          />
+          <div
+            class="chakra-input__group css-4302v8"
+          >
+            <input
+              autocomplete="current-password"
+              class="chakra-input css-j7kdny"
+              data-testid="password-input"
+              placeholder="Password"
+              type="password"
+              value=""
+            />
+            <div
+              class="chakra-input__right-element css-ohd79a"
+            >
+              <button
+                class="chakra-button css-bzoy97"
+                type="button"
+              >
+                Show
+              </button>
+            </div>
+          </div>
+          <button
+            class="chakra-button css-1bqgmxk"
+            type="button"
+          >
+            Sign In
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,11 @@
+.react-flow__node-default {
+  width: 65px !important;
+  height: 65px !important;
+  display: flex !important;
+  padding: 0 !important;
+  transition: opacity ease 0.2s !important;
+}
+
+.react-flow__node-default:hover {
+  opacity: 0.5 !important;
+}

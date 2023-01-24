@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The emulator should render and match snapshots 1`] = `
+<div>
+  <div
+    class="css-1vx1dtt"
+  >
+    <div
+      aria-valuemax="100"
+      aria-valuemin="0"
+      class="css-1xkmjny"
+      data-indeterminate=""
+      role="progressbar"
+    >
+      <svg
+        class="css-jf70f3"
+        viewBox="0 0 100 100"
+      >
+        <circle
+          class="chakra-progress__track css-ol3i12"
+          cx="50"
+          cy="50"
+          r="42"
+          stroke-width="10px"
+        />
+        <circle
+          class="chakra-progress__indicator css-wj25ge"
+          cx="50"
+          cy="50"
+          r="42"
+          stroke-width="10px"
+        />
+      </svg>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  miniflask:
+    image: miniflask-prod
+    build:
+      context: https://github.com/Project-Reclass/toynet-flask.git#89d8242bc4ed5757517188fa210fd4887fc2a7b7
+      dockerfile: toynet_mininet/Dockerfile
+
+  backend:
+    build:
+      context: https://github.com/Project-Reclass/toynet-flask.git#89d8242bc4ed5757517188fa210fd4887fc2a7b7
+      args:
+        FLASK_APP: flasksrc
+        FLASK_ENV: production
+        TOYNET_IMAGE_TAG: miniflask-prod
+        MINI_FLASK_PORT: 5000
+        COMPOSE_NETWORK: toynet_mininet
+    privileged: true
+    ports:
+      - "5000:5000"
+    environment:
+      - COMPOSE_NETWORK=toynet_mininet
+    networks:
+      - reclass_network_app
+      - toynet_mininet
+    volumes:
+      - /lib/modules:/lib/modules
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  frontend:
+    build: https://github.com/Project-Reclass/toynet-react.git#main
+    ports:
+      - "3000:80"
+    networks:
+      - reclass_network_app
+    depends_on:
+      - backend
+    environment:
+      - SERVER_URI="http://backend:5000"
+
+networks:
+  reclass_network_app:
+  toynet_mininet:
+    name: toynet_mininet
