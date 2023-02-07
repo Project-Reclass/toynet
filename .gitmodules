@@ -1,0 +1,3 @@
+[submodule "flask/toynet_mininet/mininet-submodule/mininet"]
+	path = flask/toynet_mininet/mininet-submodule/mininet
+	url = https://github.com/mininet/mininet
