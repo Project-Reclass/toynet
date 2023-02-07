@@ -11,9 +11,12 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
-      - name: Build miniflask
+      - name: Update submodule
         run: |
           git submodule update --init --recursive
+      - name: Build miniflask
+        working-directory: ./flask
+        run: |
           docker build -f toynet_mininet/dev.Dockerfile -t miniflask-dev .
 
   test:
@@ -26,14 +29,19 @@ jobs:
         with:
           python-version: 3.8
       - name: Install dependencies
+        working-directory: ./flask
         run: |
           pip3 install --upgrade pip
           pip3 install -r requirements.txt
-      - name: Build miniflask
+      - name: Update submodule
         run: |
           git submodule update --init --recursive
+      - name: Build miniflask
+        working-directory: ./flask
+        run: |
           docker build -f toynet_mininet/dev.Dockerfile -t miniflask-dev .
       - name: Run tests with pytest
+        working-directory: ./flask
         run: |
             source environment/env-dev
             docker network create reclass_network
@@ -46,10 +54,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
+        working-directory: ./flask
         run: |
           pip3 install flake8
           pip3 install pylint
       - name: Lint with flake8
+        working-directory: ./flask
         run: |
           flake8 flasksrc --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 flasksrc --count --max-complexity=15 --max-line-length=100 --statistics
