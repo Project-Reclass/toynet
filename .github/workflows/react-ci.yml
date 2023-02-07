@@ -1,10 +1,9 @@
-name: CI
+name: react-ci
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    paths:
+      - 'react/**/*'
 
 jobs:
   test:
@@ -14,8 +13,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install modules
-      run: cd $GITHUB_WORKSPACE; npm install
+      working-directory: ./react
+      run: npm install
     - name: Run tests
+      working-directory: ./react
       run: npm test
 
   lint:
@@ -26,8 +27,12 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 10
-      - run: npm i
-      - run: npm run style:check
+      - name: "npm install"
+        working-directory: ./react
+        run: npm i
+      - name: "eslint"
+        working-directory: ./react
+        run: npm run style:check
 
   check-types:
     name: check types
@@ -37,8 +42,12 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 10
-      - run: npm i
-      - run: npm run check-types
+      - name: "npm install"
+        working-directory: ./react
+        run: npm i
+      - name: "check types"
+        working-directory: ./react
+        run: npm run check-types
     
   check-build:
     name: check build
@@ -48,5 +57,9 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 10
-      - run: npm i
-      - run: npm run build
+      - name: "npm install"
+        working-directory: ./react
+        run: npm i
+      - name: "build"
+        working-directory: ./react
+        run: npm run build

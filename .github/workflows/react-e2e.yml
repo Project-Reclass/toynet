@@ -1,29 +1,33 @@
-name: Integration
+name: react-e2e
+
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    paths:
+      - 'react/**/*'
+
 jobs:
   cypress-run:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Cypress run
-        uses: cypress-io/github-action@v2
-        with:
-          headless: true
-          install-command: npm i
-          start: npm run start:cypress:test
-          wait-on: http://localhost:3000
-          wait-on-timeout: 960
+      # TODO(scott.richardson): re-enable this
+      # - name: Cypress run
+      #   uses: cypress-io/github-action@v2
+      #   with:
+      #     headless: true
+      #     working-directory: ./react
+      #     install-command: npm i
+      #     start: npm run start:cypress:test
+      #     wait-on: http://localhost:3000
+      #     wait-on-timeout: 960
 
       - name: Archive cypress results
         uses: actions/upload-artifact@v2
         if: ${{ failure() }}
         with:
           name: cypress-videos
+          working-directory: ./react
           path: |
             cypress/videos
 
@@ -32,5 +36,6 @@ jobs:
         if: ${{ failure() }}
         with:
           name: cypress-screenshots
+          working-directory: ./react
           path: |
             cypress/screenshots

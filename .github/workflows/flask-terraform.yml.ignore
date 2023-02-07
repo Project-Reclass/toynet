@@ -1,4 +1,4 @@
-name: "Terraform"
+name: flask-terraform
 
 on: 
   pull_request:
