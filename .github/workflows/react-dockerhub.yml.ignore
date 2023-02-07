@@ -1,8 +1,8 @@
-name: Build Docker Image 
+name: react-dockerhub
 
 on:
   workflow_run:
-    workflows: ["Integration"]
+    workflows: ["react-e2e"]
     branches: [main]
     types: 
       - completed
@@ -16,6 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
+      working-directory: ./react
       if: ${{ github.event.workflow_run.conclusion == 'success' }}
       run: |
         echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin docker.io
