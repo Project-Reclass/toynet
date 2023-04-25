@@ -20,11 +20,11 @@ resource "aws_key_pair" "deployer" {
 }
 
 resource "aws_instance" "app_server" {
-  ami           = "ami-0385fb77199a3e724"
+  ami           = "ami-0385fb77199a3e724" # This has the website in it; seems a little off from the real one but backup restore should handle it
   instance_type = "t2.micro"
   iam_instance_profile = "CodeDeployDemo-EC2-Instance-Profile"
   key_name = "new-kp"
-  vpc_security_group_ids = ["sg-0104b7c63301a7d1c"]	
+  vpc_security_group_ids = ["sg-0104b7c63301a7d1c"]	 # This is not the site SG we actually use
 
   tags = {
     Name = "p1-projectreclass.org"
