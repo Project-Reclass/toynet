@@ -64,7 +64,7 @@ CREATE TABLE toynet_value_inspirations (
   value_id INTEGER NOT NULL,
   organization TEXT NOT NULL,
   quote TEXT NOT NULL,
-  FOREIGN KEY (value_id) REFERENCES toynet_value (id)
+  FOREIGN KEY (value_id) REFERENCES toynet_values (id)
 );
 
 CREATE TABLE toynet_value_entries (
@@ -74,7 +74,7 @@ CREATE TABLE toynet_value_entries (
   quote TEXT NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (value_id, username, user_group_id),
-  FOREIGN KEY (value_id) REFERENCES toynet_value (id)
+  FOREIGN KEY (value_id) REFERENCES toynet_values (id),
   FOREIGN KEY (username, user_group_id) REFERENCES users (username, user_group_id)
 );
 
@@ -160,6 +160,7 @@ CREATE TABLE toynet_survey_responses(
   FOREIGN KEY (submission_id) REFERENCES toynet_survey_submissions(submission_id)
   FOREIGN KEY (question_id, type_id) REFERENCES toynet_survey_questions(question_id, type_id)
 );
+
 -- emulator submodule
 
 CREATE TABLE toynet_topos (
