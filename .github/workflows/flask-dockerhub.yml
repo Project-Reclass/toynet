@@ -1,0 +1,31 @@
+name: Build Docker Images
+
+on:
+  workflow_run:
+    workflows: ["flask-ci"]
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  build-mininet:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      if: ${{ github.event.workflow_run.conclusion == 'success' }}
+      run: |
+        echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin docker.io
+        docker build . --file toynet_mininet/Dockerfile --tag docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_MININET_IMAGE_NAME }}:$GITHUB_SHA
+        docker push docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_MININET_IMAGE_NAME }}:$GITHUB_SHA
+
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      if: ${{ github.event.workflow_run.conclusion == 'success' }}
+      run: |
+        echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin docker.iob
+        docker build . --file Dockerfile --tag docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_FLASK_IMAGE_NAME }}:$GITHUB_SHA
+        docker push docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_FLASK_IMAGE_NAME }}:$GITHUB_SHA
