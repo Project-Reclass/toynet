@@ -1,0 +1,26 @@
+name: react-dockerhub
+on:
+  workflow_dispatch:
+  # push:
+  # When we spend time setitng up e2e tests properly then we an re-enable but 
+  # for ow we can keep them off
+  # workflow_run:
+    workflows: ["react-ci"]
+    branches: [main]
+    types:
+      - completed
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker image
+        working-directory: ./react
+        if: ${{ github.event.workflow_run.conclusion == 'success' }} 
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin docker.io
+          docker build . --file Dockerfile --tag docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REACT_IMAGE_NAME }}:$GITHUB_SHA
+          docker push docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REACT_IMAGE_NAME }}:$GITHUB_SHA
+      - name: Cancel next jobs
+        if: ${{ github.event.workflow_run.conclusion != 'success' }}
+        run: exit 1
