@@ -3,7 +3,7 @@
 variable "region" {
   description = "Region to deploy in"
   type        = string
-  default     = "us-east-1"
+  default     = "us-east-1" # our production environment is `us-east-2` - this default deploys to a QA enviornment
 }
 
 variable "vpc_id" {
