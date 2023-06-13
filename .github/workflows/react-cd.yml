@@ -1,10 +1,10 @@
-name: react-cd
+name: cd
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the main branch
 on:
   workflow_run:
-    workflows: ["react-dockerhub"]
+    workflows: ["react-dockerhub", "flask-dockerhub"]
     branches: [main]
     types: 
       - completed
@@ -23,18 +23,34 @@ jobs:
         aws-region: us-east-2
 
     - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
+      id: render-react-definition
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: ./react/task-definition.json
         container-name: frontend
-        image: docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:${{ github.sha }}
+        image: docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REACT_IMAGE_NAME }}:${{ github.sha }}
+        
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: render-flask-definition
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ./react/task-definition.json
+        container-name: backend
+        image: docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_FLASK_IMAGE_NAME }}:${{ github.sha }}
+        
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: render-mininet-definition
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ./react/task-definition.json
+        container-name: mininet
+        image: docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_MININET_IMAGE_NAME }}:${{ github.sha }}
 
     - name: Deploy Amazon ECS task definition
       if: ${{ github.event.workflow_run.conclusion == 'success' }}
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        task-definition: ${{ steps.render-mininet-definition.outputs.task-definition }}
         service: toynet-service
         cluster: ToyNet
         wait-for-service-stability: true
