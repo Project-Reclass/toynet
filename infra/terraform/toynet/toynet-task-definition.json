@@ -1,0 +1,70 @@
+[
+    {
+      "cpu": 0,
+      "memoryReservation": 128,
+      "image": "docker.io/projectreclass/toynet-mininet:f903173c5cdd00a91d3f6f5ce08669128daa6ad6",
+      "name": "mininet"
+    },
+    {
+      "cpu": 0,
+      "environment": [
+        {
+          "name": "COMPOSE_NETWORK",
+          "value": "bridge"
+        },
+        {
+          "name": "FLASK_APP",
+          "value": "flasksrc"
+        },
+        {
+          "name": "MINI_FLASK_PORT",
+          "value": "5000"
+        },
+        {
+          "name": "TOYNET_IMAGE_TAG",
+          "value": "docker.io/projectreclass/toynet-mininet:f903173c5cdd00a91d3f6f5ce08669128daa6ad6"
+        }
+      ],
+      "mountPoints": [
+        {
+          "containerPath": "/var/run/docker.sock",
+          "sourceVolume": "docker-socket"
+        },
+        {
+          "containerPath": "/lib/modules",
+          "sourceVolume": "lib-modules"
+        }
+      ],
+      "memoryReservation": 128,
+      "image": "docker.io/projectreclass/toynet-backend:f903173c5cdd00a91d3f6f5ce08669128daa6ad6",
+      "name": "backend"
+    },
+    {
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "protocol": "tcp",
+          "containerPort": 80
+        }
+      ],
+      "cpu": 0,
+      "environment": [
+        {
+          "name": "SERVER_URI",
+          "value": "http://backend:5000"
+        }
+      ],
+      "memoryReservation": 128,
+      "image": "docker.io/projectreclass/toynet-frontend:d13d781955396eb82854f87a436ac79b4d3f5cba",
+      "dependsOn": [
+        {
+          "containerName": "backend",
+          "condition": "START"
+        }
+      ],
+      "links": [
+        "backend:backend"
+      ],
+      "name": "frontend"
+    }
+]
