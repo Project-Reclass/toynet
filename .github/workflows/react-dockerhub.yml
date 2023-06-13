@@ -4,7 +4,7 @@ on:
   # push:
   # When we spend time setitng up e2e tests properly then we an re-enable but 
   # for ow we can keep them off
-  # workflow_run:
+  workflow_run:
     workflows: ["react-ci"]
     branches: [main]
     types:
