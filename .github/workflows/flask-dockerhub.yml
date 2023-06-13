@@ -13,6 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
+      working-directory: ./flask
       if: ${{ github.event.workflow_run.conclusion == 'success' }}
       run: |
         echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin docker.io
@@ -24,6 +25,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
+      working-directory: ./flask
       if: ${{ github.event.workflow_run.conclusion == 'success' }}
       run: |
         echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin docker.io
