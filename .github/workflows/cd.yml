@@ -34,7 +34,7 @@ jobs:
         id: render-flask-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ./task-definition.json
+          task-definition: ${{ steps.render-react-definition.outputs.task-definition }}
           container-name: backend
           image: docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_FLASK_IMAGE_NAME }}:${{ github.sha }}
 
@@ -42,7 +42,7 @@ jobs:
         id: render-mininet-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ./task-definition.json
+          task-definition: ${{ steps.render-flask-definition.outputs.task-definition }}
           container-name: mininet
           image: docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_MININET_IMAGE_NAME }}:${{ github.sha }}
 
