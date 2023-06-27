@@ -40,6 +40,11 @@ jobs:
           task-definition: ${{ steps.render-react-definition.outputs.task-definition }}
           container-name: backend
           image: docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_FLASK_IMAGE_NAME }}:${{ github.sha }}
+          environment-variables: |
+            COMPOSE_NETWORK=bridge
+            FLASK_APP=flasksrc
+            MINI_FLASK_PORT=5000
+            TOYNET_IMAGE_TAG=docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_MININET_IMAGE_NAME }}:${{ github.sha }}
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: render-mininet-definition
