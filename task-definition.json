@@ -8,24 +8,6 @@
     },
     {
       "cpu": 0,
-      "environment": [
-        {
-          "name": "COMPOSE_NETWORK",
-          "value": "bridge"
-        },
-        {
-          "name": "FLASK_APP",
-          "value": "flasksrc"
-        },
-        {
-          "name": "MINI_FLASK_PORT",
-          "value": "5000"
-        },
-        {
-          "name": "TOYNET_IMAGE_TAG",
-          "value": "docker.io/projectreclass/toynet-mininet-new:f903173c5cdd00a91d3f6f5ce08669128daa6ad6"
-        }
-      ],
       "mountPoints": [
         {
           "containerPath": "/var/run/docker.sock",
