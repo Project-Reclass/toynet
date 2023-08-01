@@ -26,6 +26,9 @@ import Layout from './layout';
 import ErrorBoundary from './common/components/ErrorBoundary';
 import LoadingSpinner from './common/components/LoadingSpinner';
 
+import { datadogRum } from '@datadog/browser-rum';
+import { IS_DEV } from './common/utils';
+
 const Lecture = React.lazy(() => import('./Curriculum/Lecture'));
 const Login = React.lazy(() => import('./Login'));
 const Emulator = React.lazy(() => import('./Emulator'));
@@ -39,6 +42,27 @@ const NotFound = React.lazy(() => import('./common/NotFound'));
 const SplashScreen = React.lazy(() => import('./SplashScreen'));
 const Article = React.lazy(() => import('./Curriculum/Article'));
 
+const REPLAY_SAMPLE_RATE = 20;
+
+datadogRum.init({
+  applicationId: '02d43d67-bd9d-40a5-a0c4-116f35a14bcc',
+  clientToken: 'pub96566feb58fc59767663ad5c9932a81e',
+  site: 'datadoghq.com',
+  service: 'toynet',
+  env: IS_DEV ? 'development' : 'prod',
+
+  // Specify a version number to identify the deployed version of your application in Datadog
+  // version: '1.0.0',
+  sessionSampleRate: 100,
+  sessionReplaySampleRate: REPLAY_SAMPLE_RATE,
+  trackUserInteractions: true,
+  trackResources: true,
+  trackLongTasks: true,
+  defaultPrivacyLevel: 'mask-user-input',
+});
+
+datadogRum.startSessionReplayRecording();
+
 const LoadingWrapper = styled('div')`
   width: 100%;
   height: 100vh;
@@ -48,10 +72,15 @@ function App() {
   return (
     <ErrorBoundary>
       <Router>
-        <Suspense fallback={<LoadingWrapper><LoadingSpinner /></LoadingWrapper>}>
+        <Suspense
+          fallback={
+            <LoadingWrapper>
+              <LoadingSpinner />
+            </LoadingWrapper>
+          }
+        >
           <Switch>
-
-            <Route exact path='/'>
+            <Route exact path="/">
               <Layout title={'Home'} hideSideNav={true}>
                 <SplashScreen />
               </Layout>
@@ -87,8 +116,8 @@ function App() {
               </Layout>
             </Route>
 
-            <Route exact path ="/module/:moduleId/lecture/:lectureId">
-              <Layout title='Lecture'>
+            <Route exact path="/module/:moduleId/lecture/:lectureId">
+              <Layout title="Lecture">
                 <Lecture />
               </Layout>
             </Route>
@@ -111,7 +140,7 @@ function App() {
               </Layout>
             </Route>
 
-            <Route path='/module/:moduleId/video/:videoId'>
+            <Route path="/module/:moduleId/video/:videoId">
               <Layout title={'Video'}>
                 <Video />
               </Layout>
@@ -122,7 +151,6 @@ function App() {
                 <NotFound />
               </Layout>
             </Route>
-
           </Switch>
         </Suspense>
       </Router>
