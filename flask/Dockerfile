@@ -28,6 +28,7 @@ COPY requirements.txt requirements.txt
 RUN apt update -y
 RUN apt install gcc python3-dev -y
 
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
 COPY . .
