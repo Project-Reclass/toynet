@@ -56,16 +56,13 @@ export const isSwitch = (name: string) =>
 export const isHost = (name: string) =>
   name.length > 0 && name[0].toLowerCase() === 'h';
 
-
 /**
  * Prints message to console.error if `NODE_ENV` is set to
  * `development`. Accepts anything as an arguments.
  */
 export const devError = (msg: any) =>
-  process.env.NODE_ENV === 'development' && console.error(
-    typeof msg === 'object' ? JSON.stringify(msg) : msg,
-  );
-
+  process.env.NODE_ENV === 'development' &&
+  console.error(typeof msg === 'object' ? JSON.stringify(msg) : msg);
 
 /**
  * Generates a unique string ID based on the current time
@@ -77,9 +74,7 @@ export const devError = (msg: any) =>
  * the same millisecond and the same random number is generated
  * twice.
  */
-export const genUniqueId = () =>
-    `${Date.now()}${Math.random()}`;
-
+export const genUniqueId = () => `${Date.now()}${Math.random()}`;
 
 interface CreateLink {
   moduleId: number;
@@ -88,11 +83,11 @@ interface CreateLink {
 }
 
 export const createLink = ({ type, id, moduleId }: CreateLink) => {
-  const moduleType = type === 'LAB' ? 'emulator' : type.toString().toLowerCase();
+  const moduleType =
+    type === 'LAB' ? 'emulator' : type.toString().toLowerCase();
 
   return `/module/${moduleId}/${moduleType}/${id}`;
 };
-
 
 /**
  * Updates the query search without refreshing the page
@@ -105,10 +100,14 @@ export const createLink = ({ type, id, moduleId }: CreateLink) => {
  */
 
 export const setQueryStringWithoutPageReload = (qsValue: string) => {
-  const newurl = window.location.protocol + '//' +
-                 window.location.host +
-                 window.location.pathname +
-                 qsValue;
+  const newurl =
+    window.location.protocol +
+    '//' +
+    window.location.host +
+    window.location.pathname +
+    qsValue;
 
   window.history.pushState({ path: newurl }, '', newurl);
 };
+
+export const IS_DEV = process.env.NODE_ENV === 'development';
