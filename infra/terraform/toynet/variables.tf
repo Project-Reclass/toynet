@@ -6,6 +6,14 @@ variable "region" {
   default     = "us-east-1" # our production environment is `us-east-2` - this default deploys to a QA enviornment
 }
 
+# This variable must be specified as an environment variable from the command line invocation, eg:
+# TF_VAR_username=foobar terraform apply
+variable "api_key" {
+  description = "Datadog API key"
+  type        = string
+  sensitive   = true
+}
+
 variable "vpc_id" {
   description = "VPC ID"
   type        = string

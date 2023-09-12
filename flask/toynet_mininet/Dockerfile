@@ -23,7 +23,7 @@
 # 
 # 	-v <XML File Path>:/root/toynet-mininet/topo.xml #mounts the <XML File Path> to /root/toynet-mininet/topo.xml on the container
 
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 USER root
 WORKDIR /root
@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y apt-transport-https && apt-get install 
     openvswitch-testcontroller \
     gcc \
     git \
-    python3.6-dev \
+    python3-dev \
     python3-pip \
  && rm -rf /var/lib/apt/lists/* 
 
@@ -50,13 +50,13 @@ ENV FLASK_ENV=production
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
-RUN git clone https://github.com/Project-Reclass/toynet-flask.git && cd toynet-flask && git submodule update --init --recursive
+RUN git clone https://github.com/Project-Reclass/toynet.git && cd toynet/flask && git submodule update --init --recursive
 
-WORKDIR /root/toynet-flask/toynet_mininet
+WORKDIR /root/toynet/flask/toynet_mininet
 RUN pip3 install --upgrade pip
 RUN pip3 install --upgrade setuptools
 RUN pip3 install -r requirements.txt 
 
-RUN chmod +x /root/toynet-flask/toynet_mininet/*.sh
+RUN chmod +x /root/toynet/flask/toynet_mininet/*.sh
 
-ENTRYPOINT ["/root/toynet-flask/toynet_mininet/entrypoint.sh"]
+ENTRYPOINT ["/root/toynet/flask/toynet_mininet/entrypoint.sh"]

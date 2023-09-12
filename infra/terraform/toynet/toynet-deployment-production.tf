@@ -191,7 +191,7 @@ resource "aws_launch_configuration" "toynet_launch_configuration" {
   key_name                    = "blaze-infra"
   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
 
-  user_data                   = base64encode("#!/bin/bash\n mkdir /etc/ecs \necho ECS_CLUSTER='ToyNet' >> /etc/ecs/ecs.config")
+  user_data                   = base64encode("#!/bin/bash\n mkdir /etc/ecs \necho ECS_CLUSTER='ToyNet' >> /etc/ecs/ecs.config\nDD_API_KEY=${var.api_key} DD_SITE='datadoghq.com' DD_APM_INSTRUMENTATION_ENABLED=host bash -c \"$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script_agent7.sh)\"\nsed -i 's/  # apm_non_local_traffic: false/apm_non_local_traffic: true/' /etc/datadog-agent/datadog.yaml\nrestart datadog-agent")
   associate_public_ip_address = true
   security_groups                = [aws_security_group.toynet_sg.id]
 }
