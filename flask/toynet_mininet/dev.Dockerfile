@@ -39,6 +39,7 @@ RUN apt-get -y update && apt-get install -y apt-transport-https && apt-get insta
     gcc \
     python3-dev \
     python3-pip \
+    libffi-dev \
  && rm -rf /var/lib/apt/lists/* 
 
 EXPOSE 5000 
