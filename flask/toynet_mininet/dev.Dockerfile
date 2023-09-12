@@ -22,7 +22,7 @@
 # Run command
 # 
 # 	-v <XML File Path>:/root/toynet-mininet/topo.xml #mounts the <XML File Path> to /root/toynet-mininet/topo.xml on the container
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 USER root
 WORKDIR /root
@@ -37,7 +37,7 @@ RUN apt-get -y update && apt-get install -y apt-transport-https && apt-get insta
     openvswitch-switch \
     openvswitch-testcontroller \
     gcc \
-    python3.6-dev \
+    python3-dev \
     python3-pip \
  && rm -rf /var/lib/apt/lists/* 
 
