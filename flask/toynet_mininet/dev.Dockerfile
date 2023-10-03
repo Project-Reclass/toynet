@@ -22,12 +22,13 @@
 # Run command
 # 
 # 	-v <XML File Path>:/root/toynet-mininet/topo.xml #mounts the <XML File Path> to /root/toynet-mininet/topo.xml on the container
-FROM ubuntu:22.04
+FROM python:3.8-slim-buster
 
 USER root
 WORKDIR /root
 
-RUN apt-get -y update && apt-get install -y apt-transport-https && apt-get install -y --no-install-recommends \
+RUN apt-get -y update && apt-get install -y apt-transport-https
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
     iproute2 \
